@@ -1,0 +1,90 @@
+You are a senior full-stack engineer. The project codebase uploaded here is a web app named “Meta Traders,” built with React (frontend) and Node.js + Express (backend). The database is PostgreSQL or MongoDB. The goal is to update and complete this codebase so it fully meets the detailed functional and design requirements described in the provided `requirements.txt` file.
+
+Carefully read the entire `requirements.txt`. Then:
+1. Compare the current project implementation with the requirements.
+2. Identify and complete all missing or partial functionalities.
+3. Refactor existing code to match the architecture, routes, and UI described.
+4. Maintain consistency in theme, API routes, and frontend UX.
+
+---
+
+### 🔧 Update Tasks (based on requirements.txt)
+
+#### 🔐 Authentication & KYC
+- Implement secure login/signup with JWT + Google OAuth.
+- Add forgot-password with OTP via email.
+- Add full KYC-based signup with all required fields (Name, Aadhaar, PAN, etc.) and file uploads (Profile, Aadhaar Front/Back, PAN, Passport, Bank Passbook).
+- Admin can approve/reject/edit KYC and view uploaded documents.
+- Client can view but not edit KYC status.
+
+#### 💰 Funds & Withdrawals
+- Implement 3-step Add Money flow:
+  1. Select payment method (UPI/Bank).
+  2. Show corresponding details (QR, UPI ID, Bank Name, IFSC, Account Number).
+  3. Enter amount + upload screenshot → send to admin for approval.
+- Admin panel: Approve/Reject fund requests (with optional message).
+- Client dashboard updates balance once approved.
+- Implement withdrawal request system with admin approval and notification.
+
+#### 📈 Trade Reports
+- Admin can add/edit/delete trades per user.
+- Auto-calculate Profit %, P/L, and color-coded indicators (green for profit, red for loss).
+- Implement charts (Recharts/Chart.js) and downloadable reports (CSV/PDF).
+- Client view includes filters (date, segment, investment type).
+
+#### 🧾 Dashboard
+- Client Home shows today’s profits/losses (summary + chart).
+- Admin Dashboard shows total users, funds, profits, pending requests.
+- Include real-time updates and notifications.
+
+#### 💬 Notifications & Messages
+- Implement in-app notifications (Socket.io) + email notifications via Nodemailer.
+- Notification triggers:
+  - Fund/Withdrawal approved/rejected
+  - KYC approved
+  - New trade report
+- Add “Help / Live Chat” between client and admin.
+- Show market hours status (green = live, yellow = off-market).
+
+#### 🎨 UI/UX Enhancements
+- Apply premium gradient theme (orange → purple) with Tailwind + ShadCN UI.
+- Implement dark/light mode toggle.
+- Use consistent layout:
+  - Client: Top nav (logo, notifications, market hours, profile).
+  - Admin: Sidebar + collapsible menu.
+- Mobile-friendly (responsive + bottom nav).
+- Add interactive graphs, smooth animations, and modern typography (Poppins/Inter).
+
+#### 🧮 Calculations & Backend Logic
+- Auto-calculate all trade metrics.
+- Ensure relational models:
+  - User → Funds, Trades, Notifications, Messages.
+- Add proper timestamps and secure file handling (AWS S3 or local dev storage).
+
+#### 📤 Email Automation
+- Setup Nodemailer (or SendGrid) for transactional emails.
+- Use branded HTML templates.
+- Trigger emails automatically for approvals, rejections, and report updates.
+
+#### ⚙️ Technical Setup
+- Ensure all APIs follow documented endpoints from requirements.txt.
+- Secure all routes with JWT and role-based middleware.
+- Validate uploads and inputs.
+- Optimize performance and error handling.
+
+---
+
+### 🧩 Deliverables
+- Fully functional web app (client + admin) with all routes and UI working.
+- All required APIs implemented and connected to frontend.
+- Auth, funds, trades, and notification systems fully working.
+- Complete deployment-ready setup with `.env` configuration.
+- Clean, commented, production-ready code.
+
+---
+
+Now, **analyze the uploaded code**, identify missing modules, and start updating or creating files as necessary to fully match the above requirements.
+
+Output:
+1. A summary of missing features (comparison between code and spec).
+2. Then proceed to write and update code files accordingly (backend + frontend).

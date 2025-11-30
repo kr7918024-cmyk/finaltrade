@@ -1,0 +1,752 @@
+1. Project Overview
+
+Name: Meta Traders
+Purpose: To provide a client-facing dashboard and admin control system for displaying daily trading performance, fund flow, and trade reports in a transparent and interactive manner.
+Nature: Community-based trading management app (for F&O, derivatives, equity, commodities).
+Profit Target: 20–30% daily (based on community trades).
+
+2. Core Objectives
+
+Enable clients to securely log in and view real-time trading summaries, fund updates, and trade reports.
+
+Give the admin full control over funds, withdrawals, user KYC, and trade report management.
+
+Auto-calculate and visually represent profits/losses (green for profit, red for loss).
+
+Premium design with light/dark mode and gradient theme (orange → purple + one or two complementing colors).
+
+3. Platforms
+
+Web App + Mobile Responsive
+
+Admin Panel + Client Panel
+
+Common backend (API-based, single database).
+
+4. Authentication System
+Client Side:
+
+Login with Email & Password
+
+Google OAuth login
+
+Forgot Password (OTP via Email)
+
+Signup with Full KYC Details:
+
+Name, Email, Password, Confirm Password, 
+Mobile Number, Aadhaar Number, PAN Number, 
+Father Name, Mother Name, Nominee Name,
+Bank Details (Holder Name, Account No., IFSC),
+Profile Image, Aadhaar Front/Back, PAN Card, Passport Image, Bank Passbook
+
+Admin Side:
+
+Login (Admin credentials)
+
+Manage users, KYC, trade reports, and funds.
+
+5. Dashboard Structure (Client Side)
+1️⃣ Today’s Working Page
+
+Shows total profits and losses of all trades for the day.
+
+Visual indicators:
+
+✅ Green = Profit, 🔴 Red = Loss
+
+Arrows for gain/loss trend.
+
+Bottom summary:
+
+Total Profit, Total Loss, Total Combined
+
+2️⃣ Funds Section
+
+Shows:
+
+Total balance
+
+Fund history (additions, profits, withdrawals)
+
+Auto-generated graph (fluctuation over time)
+
+Add Money – 3-Step Process:
+
+Step 1: Select Payment Method (UPI / Bank Transfer)
+Step 2:
+
+If UPI: Show UPI ID, QR Code
+
+If Bank: Show account holder name, number, IFSC
+
+All fields have “Copy” buttons for convenience
+Step 3: Enter Amount + Upload Screenshot → Submit
+
+→ Sent to Admin for approval
+→ Once approved, fund auto-adds to client account
+
+Withdrawal Requests:
+
+User enters amount → goes to Admin for approval/rejection
+
+3️⃣ Trade Report Section
+
+Shows Daily / Weekly / Monthly auto-generated trade reports.
+
+Each report contains:
+
+Script Name, Exchange, BUY/SELL, Price, Quantity,
+Trade Value, Profit/Loss, Profit %, Segment, 
+Investment Type, Date, Time
+
+
+Calculations auto-generated (Profit % and P/L).
+
+Visual Charts + Download Option (PDF/CSV).
+
+Reports color-coded for clarity (green/red) and interactive.
+
+4️⃣ Account Page
+
+Shows user details from signup.
+
+Editable fields:
+
+Profile Image
+
+Bank Details (Account No., IFSC, UPI ID)
+
+KYC Status visible (Approved / Pending).
+
+6. Admin Panel Structure
+Dashboard Menus:
+
+Home → User Management
+
+ID, Name, Email, Role, Actions (Edit, View Details, Delete)
+
+Delete confirmation popup.
+
+Add Funds Requests
+
+User | Amount | Payment Method | Screenshot | Status | Date | Actions (Approve / Reject / Delete)
+
+
+Approval auto-adds funds.
+
+Rejection requires message box → message sent via professional email template.
+
+Withdrawal Requests
+
+ID | User | Amount | Status | Date | Actions (Approve / Reject)
+
+
+Funds
+
+Shows user-wise total funds.
+
+Actions: View Transactions, Edit Funds, View History.
+
+Trade Reports
+
+Admin can add/edit/delete trade reports per user.
+
+Reports auto-generate in client dashboard.
+
+Payment Settings
+
+Editable: QR Code, Account No, IFSC, Bank Name, UPI ID.
+
+All Trade Reports
+
+Global view of all trades, filters by user, date, segment, investment type.
+
+7. Email & Notification Rules
+
+✅ Email sent automatically when:
+
+Fund Request Approved/Rejected
+
+Withdrawal Approved/Rejected
+
+Trade Report Added (Profit/Loss Summary)
+
+✅ Rejection requires admin to enter message → included in email.
+
+✅ KYC approval notification also sent (for illusion).
+
+8. KYC & Verification
+
+KYC is optional (illusion only).
+
+Admin can approve/reject KYC manually.
+
+Admin can edit all user data (even immutable ones).
+
+Client can only edit allowed fields (profile, UPI, etc.).
+
+KYC status visible to user.
+
+9. File & Data Storage
+
+Cloud-based (AWS S3 or similar).
+
+Admin can view/edit uploaded docs.
+
+Secure download link for clients.
+
+10. UI/UX Design Guidelines
+
+Gradient Theme: Orange → Purple (with 1–2 accent colors).
+
+Style: Premium, modern, minimal, gradient-rich design.
+
+Mode: Light/Dark toggle available.
+
+Charts: Interactive, real-time update (line, bar, pie).
+
+Fonts: Sleek & professional (e.g., Poppins, Inter).
+
+Animations: Smooth transitions for panels & graphs.
+
+11. Notification & Help System
+
+Live chat (admin ↔ client) during market hours.
+
+Auto-display “Late response due to non-market hours” when offline.
+
+Admin sees all messages in query panel.
+
+Clients use “Help” button from dashboard.
+
+Notification Bell → new trade reports, fund updates, approvals.
+
+12. Technical Recommendations
+
+Frontend: React / Next.js
+
+Backend: Node.js + Express
+
+Database: PostgreSQL / MongoDB
+
+Storage: AWS S3
+
+Auth: JWT + Google OAuth
+
+Mail: Nodemailer / SendGrid
+
+Charts: Recharts / Chart.js
+
+UI Library: Tailwind + ShadCN UI       
+
+
+🔐 Auth Routes
+POST /api/auth/signup
+
+Registers a new client.
+Body:
+
+{
+  "name": "", "email": "", "password": "",
+  "mobile": "", "aadhaar": "", "pan": "",
+  "fatherName": "", "motherName": "", "nomineeName": "",
+  "bankDetails": {
+    "holderName": "", "accountNumber": "", "ifsc": ""
+  },
+  "upiId": "",
+  "documents": {
+    "profileImage": "", "passport": "",
+    "aadhaarFront": "", "aadhaarBack": "",
+    "panCard": "", "bankPassbook": ""
+  }
+}
+
+
+Response: { success: true, userId: "..." }
+
+POST /api/auth/login
+
+Login with email & password.
+Response: { token, user }
+
+POST /api/auth/google
+
+Login/Register via Google OAuth token.
+
+POST /api/auth/forgot-password
+
+Sends OTP to user’s email.
+Body: { email }
+
+POST /api/auth/reset-password
+
+Resets password with OTP.
+Body: { email, otp, newPassword }
+
+👤 User Routes
+GET /api/users/me
+
+Get profile details of logged-in user.
+
+PUT /api/users/me
+
+Update editable fields (profile image, UPI, bank info).
+
+GET /api/users/:id (Admin only)
+
+Get any user details (including KYC docs).
+
+PUT /api/users/:id (Admin only)
+
+Update user details (for KYC approval/editing).
+
+DELETE /api/users/:id (Admin only)
+
+Delete user (with confirmation).
+
+💸 Funds & Transactions
+POST /api/funds/add-request
+
+Client creates fund add request.
+Body:
+
+{
+  "amount": 10000,
+  "method": "UPI",
+  "screenshot": "image_url"
+}
+
+GET /api/funds/requests (Admin only)
+
+View all add-fund requests.
+
+PUT /api/funds/request/:id
+
+Approve / Reject fund request.
+Body:
+
+{
+  "status": "approved/rejected",
+  "message": "Optional rejection note"
+}
+
+POST /api/funds/withdraw-request
+
+Client submits withdrawal request.
+Body: { amount }
+
+GET /api/funds/withdraw-requests (Admin only)
+
+View all withdrawal requests.
+
+PUT /api/funds/withdraw/:id
+
+Approve / Reject withdrawal.
+
+GET /api/funds/history
+
+Get all user fund history (additions, profits, withdrawals).
+
+📈 Trade Reports
+POST /api/trades
+
+(Admin adds new trade report per user)
+Body:
+
+{
+  "userId": "",
+  "scriptName": "",
+  "exchange": "NSE",
+  "buySell": "BUY",
+  "price": 150,
+  "quantity": 100,
+  "tradeValue": 15000,
+  "exitPrice": 160,
+  "segment": "fno",
+  "investmentType": "Position",
+  "tradeDate": "2025-11-11",
+  "tradeTime": "10:35"
+}
+
+GET /api/trades
+
+(Admin + Client) → Filters by user/date/segment/investment type.
+
+GET /api/trades/:id
+
+Get single trade detail.
+
+PUT /api/trades/:id
+
+Edit trade report (Admin only).
+
+DELETE /api/trades/:id
+
+Delete trade report.
+
+System auto-calculates profit %, P/L, and total summary.
+
+🏦 Admin Controls
+GET /api/admin/stats
+
+Get overview dashboard (total users, total funds, total profit/loss).
+
+GET /api/admin/settings/payment
+
+Fetch current payment settings (Bank/UPI).
+
+PUT /api/admin/settings/payment
+
+Update bank details, QR, UPI ID, etc.
+
+📨 Notifications & Messaging
+POST /api/notifications
+
+Send notification (Admin → User).
+
+GET /api/notifications
+
+Get user notifications (real-time enabled with Socket.io).
+
+POST /api/messages
+
+Send message between admin & client (chat).
+
+GET /api/messages/:chatId
+
+Fetch chat history.
+
+📤 Email Automation
+
+Triggered automatically by backend:
+
+Fund request approval/rejection → sends email with status.
+
+Withdrawal status change → email sent.
+
+New trade report added → summary email to client.
+
+KYC approved → “KYC Approved” email.
+
+All emails use professional templates (HTML via Nodemailer).
+
+🧮 System Auto-Calculations
+
+Profit % = ((SellValue - BuyValue) / BuyValue) × 100
+
+P/L = (SellValue - BuyValue) × Quantity
+
+Color logic:
+
+Profit → Green + Up arrow
+
+Loss → Red + Down arrow
+
+📊 Data Relationships
+
+User has many Funds, Trades, Notifications, Messages.
+
+Admin has global access to all collections.
+
+All timestamps auto-tracked (createdAt, updatedAt).
+
+⚡ Security
+
+JWT tokens for client sessions.
+
+Role-based middleware: Admin / Client separation.
+
+File upload validation (type & size).
+
+Passwords hashed using bcrypt.
+
+Email OTP expires after 5 minutes.
+
+
+Global layout & shared components
+
+Top Nav (client): Logo (left), Search (opt), Notification Bell, Market Hours Badge (green when live, yellow/red when offline), Profile Dropdown (avatar → Account / Logout).
+
+Left Sidebar (admin only / collapsible on mobile): Dashboard, Users, Add Funds Requests, Withdrawals, Funds, Trade Reports, Payment Settings, Notifications, Account Settings, Logout.
+
+Bottom Nav (mobile): Home, Funds, Reports, Messages, Account.
+
+Shared components: Card, DataTable (sortable, searchable), Modal, Toast, ConfirmDialog, FileUpload, Chart (line/bar/pie), CopyButton, DownloadButton, DateRangePicker, FilterPills, Toggle (dark/light).
+
+Theme: gradient background accents (orange → purple), dark/light toggle in top nav.
+
+Routes (suggested)
+/                -> Landing / Intent-to-login (message: "Please sign-in to your account and start the adventure")
+/auth/login      -> Login (email/google)
+/auth/signup     -> Signup (full KYC + uploads)
+/auth/forgot     -> Forgot password (email OTP)
+/app/home        -> Client Home / Today's Working
+/app/funds       -> Funds (history + add money flow)
+/app/reports     -> Trade Reports (list + filters + download)
+/app/reports/:id -> Trade report detail
+/app/account     -> Account settings / KYC status
+/app/messages    -> Messages / Help (live chat)
+/admin           -> Admin Dashboard (requires admin role)
+/admin/users     -> Admin -> User Management
+/admin/funds     -> Admin -> Add Funds Requests
+/admin/withdraws -> Admin -> Withdrawal Requests
+/admin/trades    -> Admin -> Trade Reports manager
+/admin/settings  -> Admin -> Payment settings / Account settings
+
+Screen: Landing / Intent-to-login
+
+Purpose: friendly intro, CTAs for Login / Signup.
+Top copy: “Please sign-in to your account and start the adventure”
+Elements: large CTA buttons: Sign In (→ /auth/login), Sign Up (→ /auth/signup). Small note: “Login with Google” button.
+
+Screen: Auth → Login
+
+Fields: Email, Password, Remember checkbox, Forgot Password link, Login with Google.
+Behavior: show validation, error toasts. After login redirect to /app/home.
+API: POST /api/auth/login or POST /api/auth/google.
+
+Screen: Auth → Signup (multi-section form)
+
+Sections (single page with accordion or multi-steps):
+
+Personal Info: Name, Email, Password, Confirm Password, Mobile, Father Name, Mother Name, Nominee Name.
+
+IDs: Aadhaar Number, PAN Number.
+
+Bank Info: Account Holder, Account Number, IFSC, UPI ID (optional).
+
+Uploads: Profile Image, Passport Image, Aadhaar Front, Aadhaar Back, PAN Card, Bank Passbook (file uploader, preview).
+
+Final: Terms checkbox, Submit.
+
+Behavior: show progress indicator. Accept images (jpg/png, max 5 MB). On submit use POST /api/auth/signup.
+
+Screen: Auth → Forgot Password
+
+Flow: Enter email → backend sends OTP to email → OTP input & new password → POST /api/auth/reset-password. Show OTP expiry timer (5 min).
+
+Screen: Client Home — Today’s Working (/app/home)
+
+Purpose: quick overview of P/L and recent activity.
+Top cards (horizontal):
+
+Total Profit (today) — green with up-arrow and amount.
+
+Total Loss (today) — red with down-arrow and amount.
+
+Net (today) — neutral card showing net value.
+
+Middle: interactive chart (line chart) showing profit/loss by time (x-axis time, y-axis amount). Toggle: Daily / Weekly / Monthly.
+Bottom: Recent trade report list (last 10), quick download buttons.
+APIs: GET /api/trades?range=today and GET /api/admin/stats (for admin view).
+
+Screen: Funds (/app/funds)
+
+Top: Balance card showing Current Balance, Total Added, Total Withdrawn.
+Graph: Funds over time (line chart).
+Tabs / Sections: Transactions table (add/withdraw entries) + Add Money button (primary).
+
+Add Money — 3-step modal
+
+Step 1: Choose method (UPI / Bank Transfer). (UI: big selectable tiles)
+
+Step 2: Show Method Details
+
+UPI: UPI ID + QR (QR image + "Download/Copy" button)
+
+Bank: Account Holder, Account Number, IFSC, Bank Name + Copy buttons
+
+Step 3: Enter Amount + Upload Screenshot (file) + optional note → Submit Request
+
+After submit: request appears in user transactions as “Pending” and in admin /admin/funds list.
+API: POST /api/funds/add-request, GET /api/funds/history.
+
+Screen: Withdrawal Request (client side inside Funds)
+
+Form: Amount, preferred payout method (bank), optional note → Submit.
+API: POST /api/funds/withdraw-request. Admin approves via /admin/withdraws.
+
+Screen: Trade Reports List (/app/reports)
+
+Top Controls: DateRangePicker, Preset buttons (Today / Week / Month), Filter by Segment (Equity / F&O / Commodity), Search.
+Table Columns: Script Name, Exchange, Buy/Sell, Entry Price, Exit Price, Quantity, Trade Value, Profit %, P/L Amount, Date, Time, Segment, Download (CSV/PDF).
+Row indicators: Profit rows show green amount + up arrow; Loss rows show red + down arrow.
+Detail modal: clicking row opens expanded trade detail with chart snippet and export.
+
+APIs: GET /api/trades?userId=:id&from=&to=&segment=&type= and GET /api/trades/:id.
+
+Screen: Trade Report — download & aggregation
+
+Buttons: Export CSV (visible range), Export PDF (print-friendly).
+Admin: ability to add new report via POST /api/trades and bulk upload CSV for batch entries.
+
+Screen: Account (/app/account)
+
+Shows: All signup fields and uploaded docs with KYC status badges.
+Editable: Profile image, phone, bank/UPI fields.
+KYC: shows status (Pending / Approved). If admin updated fields, show “Last updated by Admin on <date>”.
+APIs: GET /api/users/me, PUT /api/users/me.
+
+Screen: Messages / Help (/app/messages)
+
+Layout: Left: list of chats / queries. Right: chat window.
+Features: Send text, attachments (screenshots), admin tags (mark resolved). Market hours indicator at top — show “Live support available” or “Late response — non-market hours”.
+Real-time: Socket.io or polling.
+APIs: GET /api/messages/:chatId, POST /api/messages.
+
+Admin Screens (important ones)
+Admin Home (/admin)
+
+KPIs: Total Users, Active Today, Total Funds, Pending Requests.
+
+Shortcuts to Approve Funds, Handle Withdrawals, Add Trade Report.
+
+User Management (/admin/users)
+
+Table: ID, Name, Email, Role, KYC Status, Total Funds, Actions (View / Edit / Delete).
+
+View user detail → show ledger, uploaded docs, KYC approve/reject buttons (with edit fields).
+
+Delete action opens confirmation modal; second confirmation required.
+
+APIs: GET /api/users, GET /api/users/:id, PUT /api/users/:id, DELETE /api/users/:id.
+
+Add Funds Requests (/admin/funds)
+
+Table: Request ID, User, Amount, Method, Screenshot (preview), Status, Date, Actions: Approve / Reject / Delete.
+
+Approve: opens confirm modal → on confirm call PUT /api/funds/request/:id with status approved; system auto-updates ledger and sends email if enabled.
+
+Reject: opens modal with mandatory “Reject reason” field → call API with status rejected + message; email includes that message.
+
+Withdrawal Requests (/admin/withdraws)
+
+Similar UI to Add Funds Requests. Admin processes offline (mark processed / rejected). Option to add transaction reference.
+
+Trade Reports Admin (/admin/trades)
+
+CRUD for trades. Bulk upload CSV option. Filters & export.
+
+Payment Settings (/admin/settings)
+
+Simple form: Bank Name, Account No, IFSC, UPI ID, QR image uploader, toggle for “Auto-send emails on approve” (Yes/No). Save updates used by client add-money flow.
+
+Notification UX
+
+Bell icon opens small dropdown with latest 10 notifications; click → navigates to relevant screen.
+
+In-app toast for immediate feedback (fund request submitted, trade added, etc.).
+
+Email templates triggered by backend (professional, branded HTML). Admin can toggle auto-email options in Payment Settings.
+
+Market Hours behavior
+
+Definition: Market hours window configurable (admin). Show badge:
+
+LIVE (green) during market hours → messages delivered real-time.
+
+AFTER HOURS (yellow/red) outside market hours → messages accepted but show “response may be delayed”.
+
+Implementation: frontend compares server time to configured market hours or server sends GET /api/admin/stats with marketStatus.
+
+Responsive & PWA notes
+
+Responsive: Desktop shows sidebar; mobile uses bottom nav + collapsible menu. Tables collapse to cards on narrow widths with key fields.
+
+PWA behavior:
+
+manifest.json with app name Meta Traders, icons, theme_color (orange → purple).
+
+Service worker for offline caching of static assets, API minimal caching for last-known balance.
+
+Prompt “Install Meta Traders” on supported browsers.
+
+Install flow: once installed, app opens in standalone mode; deep links to /app/home etc. Use Next.js PWA plugin or Workbox.
+
+Component / File structure suggestion (React)
+/src
+  /components
+    Header.jsx
+    Sidebar.jsx
+    Card.jsx
+    DataTable.jsx
+    Chart.jsx
+    Modal.jsx
+    ConfirmDialog.jsx
+    FileUploader.jsx
+    CopyButton.jsx
+    QRViewer.jsx
+  /pages (or /routes)
+    /auth
+      Login.jsx
+      Signup.jsx
+      Forgot.jsx
+    /app
+      Home.jsx
+      Funds.jsx
+      Reports.jsx
+      ReportDetail.jsx
+      Messages.jsx
+      Account.jsx
+    /admin
+      Dashboard.jsx
+      Users.jsx
+      FundsRequests.jsx
+      Withdrawals.jsx
+      TradesManager.jsx
+      Settings.jsx
+  /services
+    api.js   // axios instance with interceptors and JWT handling
+    auth.js
+    trades.js
+    funds.js
+    users.js
+  /utils
+    formatCurrency.js
+    calcProfit.js
+    dates.js
+  /hooks
+    useAuth.js
+    useSocket.js
+
+Screen Flow (user journeys — quick)
+
+Signup → Fill KYC → Submit → land on /app/home (with KYC status pending).
+
+Add Money → 3-step modal → request created → admin approves → user receives email + balance updates.
+
+Admin adds Trade → trade added → user receives in-app notification + email; P/L updates reflect in dashboard.
+
+User requests Withdrawal → admin approves/rejects → email + in-app notification; ledger updated.
+
+API mapping quick reference (per screen)
+
+Login/Signup: POST /api/auth/*
+
+Home stats: GET /api/trades?range= and GET /api/admin/stats
+
+Funds page: GET /api/funds/history, POST /api/funds/add-request
+
+Reports list: GET /api/trades
+
+Report detail: GET /api/trades/:id
+
+Messages: GET/POST /api/messages + Socket.io
+
+Admin requests pages: GET /api/funds/requests, PUT /api/funds/request/:id
+
+Visual hints / microcopy (copy-paste ready)
+
+Landing CTA: “Please sign-in to your account and start the adventure”
+
+Add Money button: “Add Money → 3-step”
+
+Pending badge: “Pending — awaiting admin approval”
+
+KYC badge: “KYC: Pending / Approved”
+
+Reject modal title: “Reject Request — provide reason” (reason required)
+
+
+
